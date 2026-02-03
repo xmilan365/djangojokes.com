@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     # MY APPS
     'pages.apps.PagesConfig',
+    'jokes.apps.JokesConfig',
 ]
 
 MIDDLEWARE = [
