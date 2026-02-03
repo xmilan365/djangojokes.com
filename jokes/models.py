@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 # Create your models here.
 class Joke(models.Model):
@@ -10,6 +11,9 @@ class Joke(models.Model):
     class Meta:
         db_table = 'jokes'
         ordering = ['question', 'answer']
+
+    def get_absolute_url(self):
+        return reverse('jokes:detail', args=[str(self.pk)])
 
     def __str__(self):
         return self.question
