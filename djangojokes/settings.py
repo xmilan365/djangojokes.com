@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'jokes.apps.JokesConfig',
     'users.apps.UsersConfig',
     'django.contrib.admindocs',
+    'jobs.apps.JobsConfig',
 ]
 
 MIDDLEWARE = [
