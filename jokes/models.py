@@ -5,8 +5,8 @@ from common.utils.text import unique_slug
 
 
 class Joke(models.Model):
-    question = models.TextField(max_length=200)
-    answer = models.TextField(max_length=100, blank=True)
+    question = models.TextField(max_length=200, help_text="The first part of the joke")
+    answer = models.TextField(max_length=100, blank=True, help_text="The second part of the joke")
 
     slug = models.SlugField(
         max_length=50,

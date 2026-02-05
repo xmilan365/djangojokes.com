@@ -1,3 +1,4 @@
+
 """
 Django settings for djangojokes project.
 
@@ -10,6 +11,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+from pathlib import Path
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -132,3 +135,7 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
     ]
+# BOTTOM OF settings.py
+if os.environ.get('ENVIRONMENT') != 'production': 
+    from .local_settings import *
+# DON'T PUT ANYTHING BELOW THIS
