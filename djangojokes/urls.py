@@ -23,5 +23,5 @@ urlpatterns = [
     path('jobs/', include('jobs.urls')),
     path('', include('pages.urls')),
     path('jokes/', include('jokes.urls')),
-
+    path('account/', include('allauth.urls'))
     ]
