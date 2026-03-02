@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import (JokeListView, JokeDetailView, JokeCreateView, JokeUpdateView, JokeDeleteView)
+from .views import (JokeListView, JokeDetailView, JokeCreateView, JokeUpdateView, JokeDeleteView, vote)
 
 app_name = 'jokes'
 urlpatterns = [
@@ -8,5 +8,6 @@ urlpatterns = [
     path('joke/<slug>/update/', JokeUpdateView.as_view(), name='update'),
     path('joke/create/', JokeCreateView.as_view(), name='create'),
     path('joke/<slug>/delete/', JokeDeleteView.as_view(), name='delete'),
+    path('joke/<slug>/vote/', vote, name='ajax-vote'),
 ]
 
