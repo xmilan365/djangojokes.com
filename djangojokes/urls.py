@@ -23,5 +23,6 @@ urlpatterns = [
     path('jobs/', include('jobs.urls')),
     path('', include('pages.urls')),
     path('jokes/', include('jokes.urls')),
-    path('account/', include('allauth.urls'))
+    path('account/', include('users.urls')),      # your custom urls
+    path('account/', include('allauth.urls')),    # allauth urls
     ]

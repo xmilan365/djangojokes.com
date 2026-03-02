@@ -22,6 +22,7 @@ class JokeCreateView(SuccessMessageMixin, LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
+        messages.success(self.request, 'You just created best joke ever.')
         return super().form_valid(form)
     
 class JokeUpdateView(SuccessMessageMixin, UpdateView):
@@ -32,3 +33,11 @@ class JokeUpdateView(SuccessMessageMixin, UpdateView):
 class JokeDeleteView(DeleteView):
     model = Joke
     success_url = reverse_lazy('jokes:list')
+
+    def delete(self, request, *args, **kwargs):
+        result = super().delete(request, *args, **kwargs)
+        return result
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Joke deleted.')
+        return super().form_valid(form)
