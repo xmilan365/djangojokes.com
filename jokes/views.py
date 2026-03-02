@@ -95,4 +95,5 @@ def vote(request, slug):
         'likes': likes,
         'dislikes': dislikes
     }
+    messages.success(request, 'Joke voted.')
     return JsonResponse(response) # Return object as JSON.
