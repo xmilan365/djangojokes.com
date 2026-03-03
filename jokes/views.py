@@ -1,22 +1,16 @@
-from django.shortcuts import render
-from django.views.generic import (DetailView, ListView, CreateView, UpdateView, DeleteView)
-from .models import Joke
-from django.urls import reverse_lazy
-from .forms import JokeForm
-from django.contrib.messages.views import SuccessMessageMixin
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib import messages
 import json
+
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
 from django.http import JsonResponse
+from django.urls import reverse_lazy
+from django.views.generic import (
+    CreateView, DeleteView, DetailView, ListView, UpdateView
+)
+
+from .forms import JokeForm
 from .models import Joke, JokeVote
-
-# Create your views here.
-class JokeListView(ListView):
-    model = Joke
-    paginate_by = 10
-
-class JokeDetailView(DetailView):
-    model = Joke
 
 class JokeCreateView(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     model = Joke
@@ -25,26 +19,89 @@ class JokeCreateView(SuccessMessageMixin, LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
-        messages.success(self.request, 'You just created best joke ever.')
         return super().form_valid(form)
-    
-class JokeUpdateView(SuccessMessageMixin, UpdateView):
-    model = Joke
-    form_class = JokeForm
-    success_message = 'Update Successful'
 
-class JokeDeleteView(DeleteView):
+
+class JokeDeleteView(UserPassesTestMixin, DeleteView):
     model = Joke
     success_url = reverse_lazy('jokes:list')
 
     def delete(self, request, *args, **kwargs):
         result = super().delete(request, *args, **kwargs)
+        messages.success(self.request, 'Joke deleted.')
         return result
 
-    def form_valid(self, form):
-        messages.success(self.request, 'Joke deleted.')
-        return super().form_valid(form)
+    def test_func(self):
+        obj = self.get_object()
+        return self.request.user == obj.user
     
+
+class JokeDetailView(DetailView):
+    model = Joke
+
+class JokeListView(ListView):
+    model = Joke
+    paginate_by = 10
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        order_fields, order_key, direction = self.get_order_settings()
+
+        context['order'] = order_key
+        context['direction'] = direction
+        
+        # get all but the last order key, which is 'default'
+        context['order_fields'] = list(order_fields.keys())[:-1]
+
+        return context
+    
+    def get_ordering(self):
+        order_fields, order_key, direction = self.get_order_settings()
+        
+        ordering = order_fields[order_key]
+
+        # if direction is 'desc' or is invalid use descending order
+        if direction != 'asc':
+            ordering = '-' + ordering
+
+        return ordering
+
+    def get_order_settings(self):
+        order_fields = self.get_order_fields()
+        default_order_key = order_fields['default_key']
+        order_key = self.request.GET.get('order', default_order_key)
+        direction = self.request.GET.get('direction', 'desc')
+        
+        # If order_key is invalid, use default
+        if order_key not in order_fields:
+            order_key = default_order_key
+
+        return (order_fields, order_key, direction)
+
+    
+    def get_order_fields(self):
+        # Returns a dict mapping friendly names to field names and lookups.
+        return {
+            'joke': 'question',
+            'category': 'category__category',
+            'creator': 'user__username',
+            'created': 'created',
+            'updated': 'updated',
+            'default_key': 'updated'
+        }
+
+
+class JokeUpdateView(SuccessMessageMixin, UserPassesTestMixin, UpdateView):
+    model = Joke
+    form_class = JokeForm
+    success_message = 'Joke updated.'
+
+    def test_func(self):
+        obj = self.get_object()
+        return self.request.user == obj.user
+
+
 def vote(request, slug):
     user = request.user # The logged-in user (or AnonymousUser).
     joke = Joke.objects.get(slug=slug) # The joke instance.
@@ -96,5 +153,4 @@ def vote(request, slug):
         'likes': likes,
         'dislikes': dislikes
     }
-    messages.success(request, 'Joke voted.')
     return JsonResponse(response) # Return object as JSON.
