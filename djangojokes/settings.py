@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
 
+    'rest_framework',
+
     # MY APPS
     'pages.apps.PagesConfig',
     'jokes.apps.JokesConfig',

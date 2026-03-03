@@ -26,4 +26,5 @@ urlpatterns = [
     path('account/', include('users.urls')),      # your custom urls
     path('account/', include('allauth.urls')),    # allauth urls
     path('__debug__/', include('debug_toolbar.urls')),
+    path('api/', include('api.urls')),
     ]
