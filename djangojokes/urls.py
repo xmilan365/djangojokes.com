@@ -25,4 +25,5 @@ urlpatterns = [
     path('jokes/', include('jokes.urls')),
     path('account/', include('users.urls')),      # your custom urls
     path('account/', include('allauth.urls')),    # allauth urls
+    path('__debug__/', include('debug_toolbar.urls')),
     ]

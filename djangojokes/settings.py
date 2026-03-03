@@ -30,6 +30,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+INTERNAL_IPS = [ 
+    # Necessary for the Debug Toolbar 
+    '127.0.0.1',]
+
 
 # Application definition
 
@@ -55,12 +59,16 @@ INSTALLED_APPS = [
     'allauth', 
     'allauth.account', 
     'allauth.socialaccount',
+    'debug_toolbar',
 ]
 
 SITE_ID = 1
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
+DEBUG_TOOLBAR_CONGIF = {
+    'DISABLE_PANELS': ['debug_toolbar.panels.redirects.RedirectsPanel']
+}
 
 AUTHENTICATION_BACKENDS = ( 
     # Needed to login by username in Django admin, even w/o `allauth` 
@@ -69,6 +77,7 @@ AUTHENTICATION_BACKENDS = (
     'allauth.account.auth_backends.AuthenticationBackend',)
 
 MIDDLEWARE = [
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
