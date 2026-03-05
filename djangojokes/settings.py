@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
 
-    'rest_framework',
+
 
     # MY APPS
     'pages.apps.PagesConfig',
@@ -54,6 +54,8 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'django.contrib.admindocs',
     'jobs.apps.JobsConfig',
+    'api.apps.ApiConfig',
+
 
     # Third-party 
     'crispy_forms', 
@@ -62,6 +64,8 @@ INSTALLED_APPS = [
     'allauth.account', 
     'allauth.socialaccount',
     'debug_toolbar',
+    'rest_framework',
+    'rest_framework_api_key',
 ]
 
 SITE_ID = 1
@@ -77,6 +81,12 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend', 
     # `allauth`-specific auth methods, such as login by e-mail 
     'allauth.account.auth_backends.AuthenticationBackend',)
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend'
+    ]
+}
 
 MIDDLEWARE = [
     "debug_toolbar.middleware.DebugToolbarMiddleware",
